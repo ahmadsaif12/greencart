@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
+import { useEffect } from "react";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -13,6 +14,11 @@ const Navbar = () => {
     navigate("/");
     setProfileOpen(false);
   };
+
+useEffect(() => {
+  document.body.style.overflow = open ? "hidden" : "auto";
+}, [open]);
+
 
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
@@ -65,7 +71,7 @@ const Navbar = () => {
               onClick={() => setProfileOpen(!profileOpen)}
             />
             {profileOpen && (
-              <ul className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg py-2 w-40 text-sm">
+              <ul className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg py-2 w-40 text-sm z-50">
                 <li
                   className="px-4 py-2 hover:bg-primary/10 cursor-pointer"
                   onClick={() => { navigate("my orders"); setProfileOpen(false); }}
@@ -96,7 +102,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm sm:hidden flex">
+        <div className="fixed top-[64px] left-0 w-full bg-white shadow-lg py-4 flex flex-col items-start gap-3 px-6 text-sm sm:hidden z-50 ">
 
           <NavLink to="/" className="block" onClick={() => setOpen(false)}>Home</NavLink>
           <NavLink to="/products" className="block" onClick={() => setOpen(false)}>All Products</NavLink>
