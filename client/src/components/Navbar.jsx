@@ -7,7 +7,7 @@ import { useEffect } from "react";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const { user, setUser, setShowUserLogin, navigate,setSearchQuery,searchQuery } = useAppContext();
+  const { user, setUser, setShowUserLogin, navigate,setSearchQuery,searchQuery ,getCartCount} = useAppContext();
 
   const logout = () => {
     setUser(null);
@@ -54,8 +54,7 @@ useEffect(()=>{
         {/* Cart */}
         <div className="relative cursor-pointer" onClick={()=>navigate("/cart")}>
           <img src={assets.nav_cart_icon} alt="nav-cart" className="w-6 opacity-80" />
-          <span className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full flex items-center justify-center">
-            0
+          <span className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full flex items-center justify-center">{getCartCount()}
           </span>
         </div>
 
@@ -97,13 +96,20 @@ useEffect(()=>{
       </div>
 
       {/* Mobile Menu Button */}
+    <div className="flex items-center gap-6 sm:hidden">
+        <div className="relative cursor-pointer" onClick={()=>navigate("/cart")}>
+          <img src={assets.nav_cart_icon} alt="nav-cart" className="w-6 opacity-80" />
+          <span className="absolute -top-2 -right-3 text-xs text-white bg-primary w-[18px] h-[18px] rounded-full flex items-center justify-center">{getCartCount()}
+          </span>
+        </div>
       <button
         onClick={() => setOpen(!open)}
         aria-label="Menu"
-        className="sm:hidden"
+        className=""
       >
         <img src={assets.menu_icon} alt="menu icon" className="w-6 h-6" />
       </button>
+    </div>
 
       {/* Mobile Menu */}
       {open && (

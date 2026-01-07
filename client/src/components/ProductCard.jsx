@@ -14,7 +14,7 @@ const ProductCard = ({ product }) => {
   if (!product) return null;
 
   return (
-    <div className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full">
+    <div onClick={()=>navigate(`/products/${product.category.toLowerCase()}/${product._id}`)} className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full">
       
       {/* Image */}
       <div
