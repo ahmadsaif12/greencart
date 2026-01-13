@@ -786,8 +786,8 @@ export const dummyAddress = [
   {
     _id: "67b5b9e54ea97f71bbc196a0",
     userId: "67b5880e4d09769c5ca61644",
-    firstName: "Great",
-    lastName: "Stack",
+    firstName: "Coding",
+    lastName: "master",
     email: "user.greatstack@gmail.com",
     street: "Street 123",
     city: "Main City",
