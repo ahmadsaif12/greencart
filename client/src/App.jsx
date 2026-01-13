@@ -11,6 +11,7 @@ import ProductCategories from './components/ProductCategories'
 import ProductDetails from './pages/ProductDetails'
 import Cart from './pages/Cart'
 import AddAddress from './pages/AddAddress'
+import MyOrder from './pages/MyOrder'
 
 const App = () => {
   const location = useLocation(); 
@@ -30,6 +31,7 @@ const App = () => {
           <Route path='/products/:category/:id' element={<ProductDetails />} />
           <Route path='/Cart' element={<Cart />}></Route>
           <Route path='add-address' element={<AddAddress />}></Route>
+          <Route path='my-orders' element={<MyOrder />}></Route>
         </Routes>
       </div>
       {!isSellerPath && <Footer />}
