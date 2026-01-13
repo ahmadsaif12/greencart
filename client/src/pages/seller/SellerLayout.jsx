@@ -3,11 +3,12 @@ import { assets } from '../../assets/assets';
 import { useAppContext } from '../../context/AppContext';
 
 const SellerLayout = () => {
-    const { isSeller } = useAppContext();
+    const { setIsSeller } = useAppContext();
 
-    const logout = async () => {
-        isSeller(false);
-    };
+   const logout = () => {
+    setIsSeller(false); 
+};
+
 
     const sidebarLinks = [
         { name: "Add Product", path: "/seller/AddProduct", icon: assets.add_icon },
@@ -26,7 +27,7 @@ const SellerLayout = () => {
                     <p>Hi! Admin</p>
                     <button
                         onClick={logout}
-                        className="border rounded-full text-sm px-4 py-1"
+                        className="border rounded-full text-sm px-4 py-1 cursor-pointer"
                     >
                         Logout
                     </button>
