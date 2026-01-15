@@ -1,2 +1,2 @@
-# .gitignore
-.env
+# Ignore env files
+server/.env
