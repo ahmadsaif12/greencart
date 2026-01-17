@@ -31,12 +31,10 @@ export const sellerLogin=async(req,res)=>{
 
 export const sellerisAuth = async (req, res) => {
   try {
-
     res.json({
       success: true,
-      message: user,
+      message: req.seller, 
     });
-
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({
@@ -45,6 +43,7 @@ export const sellerisAuth = async (req, res) => {
     });
   }
 };
+
 
 //api/user/logout logout
 export const sellerLogout = async (req, res) => {
