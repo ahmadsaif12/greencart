@@ -7,6 +7,6 @@ const sellerRouter = express.Router();
 
 sellerRouter.post("/login",sellerLogin);
 sellerRouter.get("/is-auth",authSeller,sellerisAuth);
-sellerRouter.post("/logout",authSeller, sellerLogout);
+sellerRouter.get("/logout",authSeller, sellerLogout);
 
 export default sellerRouter;
