@@ -1,7 +1,6 @@
 import express from "express";
 import { isAuth } from "../controllers/userControllers.js";
-import { addAddress } from "../controllers/addressControllers.js";
-import { getAddress } from "../controllers/addressControllers.js";
+import { addAddress ,getAddress} from "../controllers/addressControllers.js";
 
 const addressRouter = express.Router();
 
