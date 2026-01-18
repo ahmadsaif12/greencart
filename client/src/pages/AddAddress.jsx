@@ -24,10 +24,8 @@ const AddAddress = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!user) {
       toast.error("You must be logged in to add an address");
-      navigate("/cart");
       return;
     }
 
@@ -46,48 +44,122 @@ const AddAddress = () => {
 
   useEffect(() => {
     if (!user) navigate("/cart");
-  }, []);
+  }, [user]);
 
   return (
-    <div className="relative min-h-screen bg-gray-50 flex">
-      <div className="w-full md:w-1/2 flex items-center justify-center px-4">
-        <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-md border border-gray-200">
-          <h1 className="text-3xl font-semibold mb-8 text-center text-gray-700">
-            Add New Address
-          </h1>
+    <div className="flex flex-col md:flex-row items-center justify-between min-h-[80vh] px-4 py-10">
+      {/* Left Side: Form */}
+      <div className="w-full md:w-1/2 max-w-xl">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+          Add Shipping <span className="text-green-600">Address</span>
+        </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {Object.keys(address).map((field) => (
-              <div key={field} className="flex flex-col">
-                <label className="text-sm font-medium mb-1 text-black-600">
-                  {field.charAt(0).toUpperCase() + field.slice(1)}
-                </label>
-                <input
-                  type={field === "email" ? "email" : "text"}
-                  value={address[field]}
-                  onChange={(e) => handleChange(field, e.target.value)}
-                  placeholder={`Enter ${field}`}
-                  className="w-full border border-gray-300 rounded px-3 py-2 outline-none focus:ring-2 focus:ring-green-400 transition"
-                  required
-                />
-              </div>
-            ))}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Row 1: First and Last Name */}
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="First Name"
+              className="border border-gray-300 rounded-md p-2.5 outline-none focus:border-green-500"
+              value={address.firstname}
+              onChange={(e) => handleChange("firstname", e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              className="border border-gray-300 rounded-md p-2.5 outline-none focus:border-green-500"
+              value={address.lastname}
+              onChange={(e) => handleChange("lastname", e.target.value)}
+              required
+            />
+          </div>
 
-            <button
-              type="submit"
-              className="bg-green-600 text-white font-medium py-3 px-6 rounded hover:bg-green-700 transition w-full mt-4"
-            >
-              Save Address
-            </button>
-          </form>
-        </div>
+          {/* Full Width Email */}
+          <input
+            type="email"
+            placeholder="Email address"
+            className="w-full border border-gray-300 rounded-md p-2.5 outline-none focus:border-green-500"
+            value={address.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            required
+          />
+
+          {/* Full Width Street */}
+          <input
+            type="text"
+            placeholder="Street"
+            className="w-full border border-gray-300 rounded-md p-2.5 outline-none focus:border-green-500"
+            value={address.street}
+            onChange={(e) => handleChange("street", e.target.value)}
+            required
+          />
+
+          {/* Row 3: City and State */}
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="City"
+              className="border border-gray-300 rounded-md p-2.5 outline-none focus:border-green-500"
+              value={address.city}
+              onChange={(e) => handleChange("city", e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="State"
+              className="border border-gray-300 rounded-md p-2.5 outline-none focus:border-green-500"
+              value={address.state}
+              onChange={(e) => handleChange("state", e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Row 4: Zip and Country */}
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Zip code"
+              className="border border-gray-300 rounded-md p-2.5 outline-none focus:border-green-500"
+              value={address.zipcode}
+              onChange={(e) => handleChange("zipcode", e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Country"
+              className="border border-gray-300 rounded-md p-2.5 outline-none focus:border-green-500"
+              value={address.country}
+              onChange={(e) => handleChange("country", e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Full Width Phone */}
+          <input
+            type="text"
+            placeholder="Phone"
+            className="w-full border border-gray-300 rounded-md p-2.5 outline-none focus:border-green-500"
+            value={address.phone}
+            onChange={(e) => handleChange("phone", e.target.value)}
+            required
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-green-500 text-white font-semibold py-3 rounded-md hover:bg-green-600 transition-colors uppercase tracking-wider"
+          >
+            Save Address
+          </button>
+        </form>
       </div>
 
-      <div className="hidden md:block w-1/2 relative">
+      {/* Right Side: Illustration */}
+      <div className="hidden md:flex w-1/2 justify-end">
         <img
           src={assets.add_address_iamge}
-          alt="Address Illustration"
-          className="absolute bottom-0 right-0 w-full max-w-lg opacity-90"
+          alt="Illustration"
+          className="w-[80%] object-contain"
         />
       </div>
     </div>

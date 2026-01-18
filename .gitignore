@@ -1,2 +1,4 @@
 # Ignore env files
+node_modules
 server/.env
+client/ .env

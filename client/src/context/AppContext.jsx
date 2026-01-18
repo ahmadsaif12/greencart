@@ -99,20 +99,23 @@ export const AppContextProvider = ({ children }) => {
 
   // Update cart on server whenever cartItems changes
   useEffect(() => {
-    if (!user) return;
+  // 1. Only run if a user is logged in
+  if (!user) return;
 
-    const updateCart = async () => {
-      try {
-        const { data } = await axios.post("/api/cart/update", { cartItems });
-        if (!data.success) toast.error(data.message);
-      } catch (error) {
-        toast.error(error.response?.data?.message || error.message);
-      }
-    };
+  // 2. Set a timer to delay the API call
+  const delayDebounceFn = setTimeout(async () => {
+    try {
+      const { data } = await axios.post("/api/cart/update", { cartItems });
+      if (!data.success) toast.error(data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
+  }, 500); // Wait 500ms after the last change to cartItems
 
-    updateCart();
-  }, [cartItems, user]);
+  // 3. Cleanup function: Cancels the timer if cartItems changes again within 500ms
+  return () => clearTimeout(delayDebounceFn);
 
+}, [cartItems, user]); // Run when cartItems or user state changes
   const value = {
     navigate,
     user,
@@ -134,6 +137,7 @@ export const AppContextProvider = ({ children }) => {
     getCartCount,
     fetchProducts,
     axios,
+    setCartItems
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -1,11 +1,23 @@
 import express from "express";
-import { isAuth } from "../controllers/userControllers.js";
-import { getUserOrders, placeOrderCOD } from "../controllers/orderControllers.js";
+import { authUser } from "../middleware/authuser.js";
+import { 
+  getUserOrders, 
+  placeOrderCOD, 
+  placeOrderStripe, 
+  verifyStripe, 
+  getSellerOrders 
+} from "../controllers/orderControllers.js";
 
 const orderRouter = express.Router();
 
-orderRouter.post("/code", isAuth, placeOrderCOD);
-orderRouter.get("/user",isAuth,getUserOrders)
-orderRouter.get("/seller",isAuth,getUserOrders)
+// --- Customer Routes ---
+orderRouter.post("/cod", authUser, placeOrderCOD);
+orderRouter.post("/stripe", authUser, placeOrderStripe); 
+orderRouter.post("/verify", authUser, verifyStripe);     
+orderRouter.get("/user", authUser, getUserOrders);
+
+// --- Seller Routes ---
+// Fixed: Changed from getUserOrders to getSellerOrders
+orderRouter.get("/seller", authUser, getSellerOrders); 
 
 export default orderRouter;
