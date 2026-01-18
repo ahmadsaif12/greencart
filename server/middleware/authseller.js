@@ -1,28 +1,26 @@
-import jwt from "jsonwebtoken"
-export const authSeller=async(req,res,next)=>{
- const {sellerToken}=req.cookies;
- if(!sellerToken){
-    return res.json({success:false,message:"Not authorized"});
- }
-try {
-    const tokenCode = jwt.verify(sellerToken, process.env.JWT_SECRET);
+import jwt from "jsonwebtoken";
 
-    if (tokenCode.email === process.env.SELLER_EMAIL) {
-      next();
+export const authSeller = async (req, res, next) => {
+  const { sellerToken } = req.cookies;
+
+  // If no token is present
+  if (!sellerToken) {
+    return res.status(401).json({ success: false, message: "Not authorized" });
+  }
+
+  try {
+    // Verify JWT token
+    const tokenData = jwt.verify(sellerToken, process.env.JWT_SECRET);
+
+    // Check if the token belongs to the correct seller
+    if (tokenData.email === process.env.SELLER_EMAIL) {
+      req.seller = tokenData; // Optional: attach seller info to request
+      return next(); // ✅ Only call next once
     } else {
-      return res.json({
-        success: false,
-        message: "Not Authorized",
-      });
+      return res.status(403).json({ success: false, message: "Not Authorized" });
     }
-
-    next();
   } catch (error) {
-    console.log(error);
-    return res.json({
-      success: false,
-      message: "Not Authorized",
-    });
+    console.error("AuthSeller Error:", error.message);
+    return res.status(401).json({ success: false, message: "Not Authorized" });
   }
 };
-

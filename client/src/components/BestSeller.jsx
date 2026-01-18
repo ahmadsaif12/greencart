@@ -20,10 +20,8 @@ const BestSeller = () => {
               key={product._id}
               className="cursor-pointer"
               onClick={() => {
-                // Navigate to product page using _id and name slug
-                const slug = product.name.toLowerCase().replace(/\s+/g, '-')
-                navigate(`/product/${product._id}/${slug}`)
-                // window.scrollTo(0, 0)
+                // Navigate to product page using category and id
+                navigate(`/products/${product.category}/${product._id}`)
               }}
             >
               <ProductCard product={product} />

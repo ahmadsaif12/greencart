@@ -1,6 +1,5 @@
 import { useContext, useState, createContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { dummyProducts } from "../assets/assets";
 import toast from "react-hot-toast";
 import axios from "axios";
 
@@ -20,83 +19,100 @@ export const AppContextProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
 
-  // ✅ FIXED (added await)
+  // Fetch seller authentication
   const fetchSeller = async () => {
     try {
       const { data } = await axios.get("/api/seller/is-auth");
-      if (data.success) {
-        setIsSeller(true);
-      } else {
-        setIsSeller(false);
-      }
-    } catch (error) {
+      setIsSeller(data.success);
+    } catch {
       setIsSeller(false);
     }
   };
 
+  // Fetch all products
   const fetchProducts = async () => {
-    setProducts(dummyProducts);
+    try {
+      const { data } = await axios.get("/api/product/list");
+      if (data.success) setProducts(data.products);
+      else toast.error(data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    }
   };
 
+  // Fetch user and cart info
+  const fetchUser = async () => {
+    try {
+      const { data } = await axios.get("/api/user/is-auth");
+      if (data.success) {
+        setUser(data.user);
+        setCartItems(data.user.cartItems || {});
+      }
+    } catch {
+      setUser(null);
+    }
+  };
+
+  // Cart operations
   const addToCart = (ItemId) => {
     const cartData = structuredClone(cartItems);
-
-    if (cartData[ItemId]) {
-      cartData[ItemId] += 1;
-    } else {
-      cartData[ItemId] = 1;
-    }
-
+    cartData[ItemId] = (cartData[ItemId] || 0) + 1;
     setCartItems(cartData);
     toast.success("Added to cart");
   };
 
   const updateCartItems = (ItemId, quantity) => {
-    let cartData = structuredClone(cartItems);
+    const cartData = structuredClone(cartItems);
     cartData[ItemId] = quantity;
     setCartItems(cartData);
-    toast.success("updated cart data");
+    toast.success("Updated cart");
   };
 
   const deleteCartItems = (ItemId) => {
-    let cartData = structuredClone(cartItems);
+    const cartData = structuredClone(cartItems);
     if (cartData[ItemId]) {
       cartData[ItemId] -= 1;
-      if (cartData[ItemId] === 0) {
-        delete cartData[ItemId];
-      }
+      if (cartData[ItemId] === 0) delete cartData[ItemId];
     }
-    toast.success("remove cart data");
     setCartItems(cartData);
+    toast.success("Removed from cart");
   };
 
-  const getCartCount = () => {
-    let total = 0;
-    for (const item in cartItems) {
-      total += cartItems[item];
-    }
-    return total;
-  };
+  const getCartCount = () =>
+    Object.values(cartItems).reduce((acc, val) => acc + val, 0);
 
   const getCartAmount = () => {
-    let totalAmount = 0;
+    let total = 0;
     for (const item in cartItems) {
-      let itemInfo = products.find(
-        (product) => product._id === item
-      );
-      if (cartItems[item] > 0) {
-        totalAmount += itemInfo.offerPrice * cartItems[item];
-      }
+      const product = products.find((p) => p._id === item);
+      if (product) total += product.offerPrice * cartItems[item];
     }
-    return Math.floor(totalAmount * 100) / 100;
+    return Math.floor(total * 100) / 100;
   };
 
+  // Initial fetch
   useEffect(() => {
     fetchProducts();
     fetchSeller();
+    fetchUser();
   }, []);
 
-  // ✅ FIXED (export fetchSeller)
+  // Update cart on server whenever cartItems changes
+  useEffect(() => {
+    if (!user) return;
+
+    const updateCart = async () => {
+      try {
+        const { data } = await axios.post("/api/cart/update", { cartItems });
+        if (!data.success) toast.error(data.message);
+      } catch (error) {
+        toast.error(error.response?.data?.message || error.message);
+      }
+    };
+
+    updateCart();
+  }, [cartItems, user]);
+
   const value = {
     navigate,
     user,
@@ -116,18 +132,13 @@ export const AppContextProvider = ({ children }) => {
     setSearchQuery,
     getCartAmount,
     getCartCount,
+    fetchProducts,
     axios,
   };
 
-  return (
-    <AppContext.Provider value={value}>
-      {children}
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
 
-export const useAppContext = () => {
-  return useContext(AppContext);
-};
+export const useAppContext = () => useContext(AppContext);
 
 export default AppContext;

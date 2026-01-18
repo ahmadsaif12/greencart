@@ -3,15 +3,38 @@ import { useAppContext } from "../context/AppContext";
 import { Link, useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
 import ProductCard from "../components/ProductCard";
+import toast from "react-hot-toast";
 
 const ProductDetails = () => {
-  const { products, navigate, addToCart, currency } = useAppContext();
+  const { products, navigate, addToCart, currency, axios } = useAppContext();
   const { id } = useParams();
 
-  const product = products.find((item) => item._id === id);
-
+  const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [thumbnail, setThumbnail] = useState(null);
+
+  useEffect(() => {
+    // First try to find product in context
+    let prod = products.find((item) => item._id === id);
+    if (prod) {
+      setProduct(prod);
+    } else {
+      // Fetch from backend if not found
+      const fetchProduct = async () => {
+        try {
+          const { data } = await axios.get(`/api/product/${id}`);
+          if (data.success) {
+            setProduct(data.product);
+          } else {
+            toast.error("Product not found");
+          }
+        } catch (error) {
+          toast.error(error.response?.data?.message || error.message);
+        }
+      };
+      fetchProduct();
+    }
+  }, [id, products]);
 
   useEffect(() => {
     setThumbnail(product?.image?.[0] || null);
@@ -26,7 +49,7 @@ const ProductDetails = () => {
     }
   }, [product, products]);
 
-  if (!product) return <p>Product not found</p>;
+  if (!product) return <p className="p-10">Loading product...</p>;
 
   return (
     <div className="max-w-6xl w-full px-6">
@@ -104,7 +127,10 @@ const ProductDetails = () => {
               Add to Cart
             </button>
             <button
-              onClick={() => {addToCart(product._id);navigate("/cart")}}
+              onClick={() => {
+                addToCart(product._id);
+                navigate("/cart");
+              }}
               className="w-full py-3.5 cursor-pointer font-medium bg-primary text-white hover:bg-indigo-600 transition"
             >
               Buy now
