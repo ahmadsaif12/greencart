@@ -12,7 +12,7 @@ import addressRouter from "./routes/addressRoute.js";
 import orderRouter from "./routes/orderRoute.js";
 import path from "path";
 import { fileURLToPath } from "url";
-import history from "connect-history-api-fallback";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,13 +37,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/order", orderRouter);
 
-// Serve frontend build with SPA fallback
-app.use(history({
-  index: '/index.html',
-  rewrites: [
-    { from: /^\/api\/.*$/, to: (context) => context.parsedUrl.pathname } // ignore API routes
-  ]
-}));
+
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
 // Start server
