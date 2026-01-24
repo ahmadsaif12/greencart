@@ -1,3 +1,4 @@
+
 name: GreenCart CI/CD
 
 on:
@@ -7,11 +8,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: self-hosted
-
-    strategy:
-      matrix:
-        node-version: [20.x]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
 
       - name: Install server dependencies
         working-directory: server
@@ -37,5 +33,4 @@ jobs:
         working-directory: server
         run: |
           pm2 restart greencart-api || pm2 start server.js --name greencart-api
-
-
+          pm2 save
