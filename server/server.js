@@ -40,7 +40,10 @@ app.use("/api/order", orderRouter);
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
-//Start server
-app.listen(port, () => {
-  console.log(`Server is listening on http://localhost:${port}`);
+// //Start server
+// app.listen(port, () => {
+//   console.log(`Server is listening on http://localhost:${port}`);
+// });
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is listening on http://0.0.0.0:${port}`);
 });
