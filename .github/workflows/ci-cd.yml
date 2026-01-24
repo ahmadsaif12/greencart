@@ -1,4 +1,5 @@
 
+
 name: GreenCart CI/CD
 
 on:
@@ -7,25 +8,28 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted
-
-    strategy:
-      matrix:
-        node-version: [20.x]
+    runs-on: [self-hosted, greencart]
 
     steps:
+      - name: Clean workspace
+        run: rm -rf $GITHUB_WORKSPACE/*
+
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.x
 
       # -------- SERVER --------
       - name: Install server dependencies
         working-directory: server
         run: npm install
+
+      - name: Test server (optional)
+        working-directory: server
+        run: npm test || echo "No server tests"
 
       # -------- CLIENT --------
       - name: Install client dependencies
@@ -41,6 +45,3 @@ jobs:
         working-directory: server
         run: |
           pm2 restart greencart-api || pm2 start server.js --name greencart-api
-
-
-
