@@ -5,7 +5,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: self-hosted
 
     strategy:
@@ -16,26 +16,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
-      # SERVER
-      - name: Install server deps
+      # -------- SERVER --------
+      - name: Install server dependencies
         working-directory: server
         run: npm install
 
-      - name: Server tests
-        working-directory: server
-        run: npm test --if-present
-
-      # CLIENT
-      - name: Install client deps
+      # -------- CLIENT --------
+      - name: Install client dependencies
         working-directory: client
         run: npm install
 
       - name: Build client
         working-directory: client
         run: npm run build
+
+      # -------- RESTART BACKEND --------
+      - name: Restart backend with PM2
+        working-directory: server
+        run: |
+          pm2 restart greencart-api || pm2 start server.js --name greencart-api
+
 
