@@ -21,12 +21,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      # -------- SERVER --------
       - name: Install server dependencies
         working-directory: server
         run: npm install
-
-      # -------- CLIENT --------
+        
       - name: Install client dependencies
         working-directory: client
         run: npm install
@@ -35,7 +33,6 @@ jobs:
         working-directory: client
         run: npm run build
 
-      # -------- RESTART BACKEND --------
       - name: Restart backend with PM2
         working-directory: server
         run: |
