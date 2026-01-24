@@ -1,8 +1,8 @@
+import 'dotenv/config';
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import ConnectDb from "./configs/db.js";
-import 'dotenv/config';
 import userRoute from "./routes/userRoute.js";
 import sellerRoute from "./routes/sellerRoute.js";
 import { connectCloudinary } from "./configs/cloudinary.js";
