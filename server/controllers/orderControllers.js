@@ -1,4 +1,4 @@
-import 'dotenv/config';  // or import dotenv from 'dotenv'; dotenv.config();
+import 'dotenv/config';  
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
 import Address from "../models/Address.js";
