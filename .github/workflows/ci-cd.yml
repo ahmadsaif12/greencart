@@ -1,3 +1,4 @@
+
 name: GreenCart CI/CD
 
 on:
@@ -5,35 +6,41 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
-    runs-on: [self-hosted, greencart]
+  build-and-deploy:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [20.x]
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Verify Node & npm
-        run: |
-          node -v
-          npm -v
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
 
+      # -------- SERVER --------
       - name: Install server dependencies
-        run: |
-          cd server
-          npm install
+        working-directory: server
+        run: npm install
 
-      - name: Test server (optional)
-        run: |
-          cd server
-          npm test || echo "No server tests"
-
+      # -------- CLIENT --------
       - name: Install client dependencies
-        run: |
-          cd client
-          npm install
+        working-directory: client
+        run: npm install
 
       - name: Build client
+        working-directory: client
+        run: npm run build
+
+      # -------- RESTART BACKEND --------
+      - name: Restart backend with PM2
+        working-directory: server
         run: |
-          cd client
-          npm run build
+          pm2 restart greencart-api || pm2 start server.js --name greencart-api
+
 
 
