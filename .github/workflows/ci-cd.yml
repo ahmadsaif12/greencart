@@ -6,18 +6,16 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: [self-hosted, greencart]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Verify Node & npm
         run: |
           node -v
           npm -v
 
-      # SERVER
       - name: Install server dependencies
         run: |
           cd server
@@ -28,7 +26,6 @@ jobs:
           cd server
           npm test || echo "No server tests"
 
-      # CLIENT
       - name: Install client dependencies
         run: |
           cd client
@@ -38,4 +35,5 @@ jobs:
         run: |
           cd client
           npm run build
+
 
