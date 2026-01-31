@@ -154,14 +154,19 @@ export const getUserOrders = async (req, res) => {
 };
 
 // --- GET ALL ORDERS (FOR SELLER) ---
+
 export const getSellerOrders = async (req, res) => {
   try {
     const orders = await Order.find({})
-      .populate("items.product addresses")
+      .populate([
+        { path: 'items.product', model: 'Product' },
+        { path: 'addresses', model: 'Address' }
+      ])
       .sort({ createdAt: -1 });
 
     res.json({ success: true, orders });
   } catch (error) {
+    console.error("Seller Order Error:", error.message); 
     res.status(500).json({ success: false, message: error.message });
   }
 };
